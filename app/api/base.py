@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from app.api.v1.agency import agency_v1
 from app.api.v1.company import company_v1
 from app.api.v1.sim_cart import sim_cart_v1
 from app.api.v1.swagger import swagger_v1
@@ -29,3 +30,5 @@ router.include_router(sim_cart_v1, prefix="/v1.0.0", tags=["sim_cart"])
 router.include_router(ussd_v1, prefix="/v1.0.0", tags=["ussd"])
 
 router.include_router(transaction_v1, prefix="/v1.0.0", tags=["transaction"])
+
+router.include_router(agency_v1, prefix="/v1.0.0", tags=["agency"])
