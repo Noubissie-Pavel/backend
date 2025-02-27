@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel
-from pydantic import BaseModel
 
 
 class UssdBase(BaseModel):
@@ -16,7 +15,7 @@ class UssdCreate(UssdBase):
 
 
 class UssdUpdate(UssdBase):
-    is_active: Optional[bool] = None
+    pass
 
 
 class Ussd(UssdBase):
