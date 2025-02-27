@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from app.controller.transaction import create_transaction, get_transactions, get_transaction_by_id
+from app.crud.transaction import create_transaction, get_transactions, get_transaction_by_id
 from app.schemas.transaction import TransactionCreate
 
 

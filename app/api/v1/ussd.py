@@ -1,20 +1,42 @@
 from fastapi import APIRouter, Depends, Request, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.schemas.ussd import Ussd, UssdCreate, UssdUpdate
-from app.services.ussd import get_ussd_service, create_ussd_service, get_ussd_by_id_service, update_ussd_service, \
-    delete_ussd_service
+from app.schemas.ussd import Ussd, UssdCreate
+from app.services.ussd import get_ussd_service, create_ussd_service, update_ussd_service, delete_ussd_service, \
+    get_ussd_by_id_service
+from app.utils.utils import PAGE_LIMIT
 
 ussd_v1 = APIRouter()
 
 
 @ussd_v1.get("/ussd", response_model=list[Ussd])
-async def get_ussd_endpoint(skip: int = 0, limit: int = 100, db: Session = Depends(get_db),
-                            request: Request = None):
+async def get_ussd_endpoint(
+        skip: int = 0,
+        limit: int = PAGE_LIMIT,
+        db: AsyncSession = Depends(get_db),
+        request: Request = None):
     try:
-        request.state.response_message = 'Ussd response message'
-        return await get_ussd_service(db=db, skip=skip, limit=limit)
+        request.state.response_message = f'All Ussd data. {skip} - {limit}'
+        return await get_ussd_service(db, skip, limit)
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@ussd_v1.get("/ussd/{ussd_id}", response_model=Ussd)
+async def get_one_ussd_endpoint(
+        ussd_id: int,
+        db: AsyncSession = Depends(get_db),
+        request: Request = None):
+    try:
+        response = await get_ussd_by_id_service(db, ussd_id)
+        request.state.response_message = f'Ussd with id {ussd_id} fetched successfully'
+        if response is None:
+            raise HTTPException(status_code=404, detail=f"Ussd with id {ussd_id} not found.")
+        return response
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -22,38 +44,49 @@ async def get_ussd_endpoint(skip: int = 0, limit: int = 100, db: Session = Depen
 
 
 @ussd_v1.post("/ussd", response_model=Ussd)
-def create_ussd_endpoint(ussd_data: UssdCreate, db: Session = Depends(get_db),
-                         request: Request = None):
+async def create_ussd_endpoint(
+        ussd_data: UssdCreate,
+        db: AsyncSession = Depends(get_db),
+        request: Request = None):
     try:
-        new_operator = create_ussd_service(db=db, ussd_data=ussd_data)
-        request.state.response_message = "Ussd created successfully"
-        return new_operator
+        request.state.response_message = 'Ussd created successfully'
+        return await create_ussd_service(db, ussd_data)
     except HTTPException as e:
         raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@ussd_v1.get("/ussd/{ussd_id}")
-def get_ussd_route(ussd_id: int, db: Session = Depends(get_db)):
-    ussd = get_ussd_by_id_service(db=db, ussd_id=ussd_id)
-    if ussd is None:
-        raise HTTPException(status_code=404, detail="Ussd data not found")
-    return ussd
+@ussd_v1.put("/ussd/{ussd_id}", response_model=Ussd)
+async def update_ussd_endpoint(
+        ussd_id: int,
+        ussd_data: UssdCreate,
+        db: AsyncSession = Depends(get_db),
+        request: Request = None):
+    try:
+        response = await update_ussd_service(db, ussd_id, ussd_data)
+        request.state.response_message = f'Ussd with id {ussd_id} updated successfully'
+        if response is None:
+            raise HTTPException(status_code=404, detail=f"Ussd with id {ussd_id} not found.")
+        return response
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-@ussd_v1.put("/ussd/{ussd_id}")
-def update_ussd_route(ussd_id: int, ussd: UssdUpdate,
-                      db: Session = Depends(get_db)):
-    ussd = update_ussd_service(db=db, ussd_id=ussd_id, ussd_data=ussd)
-    if ussd is None:
-        raise HTTPException(status_code=404, detail="Ussd not found")
-    return ussd
-
-
-@ussd_v1.delete("/ussd/{ussd_id}")
-def delete_ussd_route(ussd_id: int, db: Session = Depends(get_db)):
-    ussd = delete_ussd_service(db=db, ussd_id=ussd_id)
-    if ussd is None:
-        raise HTTPException(status_code=404, detail="Ussd not found")
-    return ussd
+@ussd_v1.delete("/ussd/{ussd_id}", response_model=Ussd)
+async def delete_ussd_endpoint(
+        ussd_id: int,
+        db: AsyncSession = Depends(get_db),
+        request: Request = None):
+    try:
+        response = await delete_ussd_service(db, ussd_id)
+        request.state.response_message = f'Ussd with id {ussd_id} deleted successfully'
+        if response is None:
+            raise HTTPException(status_code=404, detail=f"Ussd with id {ussd_id} not found.")
+        return response
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

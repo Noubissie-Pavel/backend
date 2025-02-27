@@ -4,6 +4,8 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 
+from app.utils.utils import PAGE_LIMIT
+
 error_messages = {
     400: "Bad Request",
     401: "Unauthorized",
@@ -18,7 +20,7 @@ class ResponseFormattingMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
 
         page = int(request.query_params.get("page", 1))
-        size = int(request.query_params.get("size", 10))
+        size = int(request.query_params.get("size", PAGE_LIMIT))
         skip = (page - 1) * size
         limit = size
 

@@ -2,8 +2,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy.orm import Session
 from sqlalchemy.orm import Session
 
-from app.controller.company import create_company as crud_create_company
-from app.controller.company import get_companies as crud_get_companies
+from app.crud.company import create_company as crud_create_company
+from app.crud.company import get_companies as crud_get_companies
 from app.schemas.company import CompanyCreate
 
 

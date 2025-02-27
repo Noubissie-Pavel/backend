@@ -1,36 +1,57 @@
 import sys
 from pathlib import Path
 
-from alembic import context
-
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from app.db.session import engine
+import asyncio
+from logging.config import fileConfig
 
+from alembic import context
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy import pool
 from app.models import user, company, telecom_operator, sim_cart, ussd, transaction
 
-config = context.config
+if context.config.config_file_name is not None:
+    fileConfig(context.config.config_file_name)
 
-config.set_main_option('sqlalchemy.url', str(engine.url))
+target_metadata = [
+    user.Base.metadata,
+    company.Base.metadata,
+    telecom_operator.Base.metadata,
+    sim_cart.Base.metadata,
+    ussd.Base.metadata,
+    transaction.Base.metadata,
+]
 
-target_metadata = [user.Base.metadata, company.Base.metadata, telecom_operator.Base.metadata, sim_cart.Base.metadata,
-                   ussd.Base.metadata, transaction.Base.metadata]
+
+def run_migrations_offline():
+    url = context.config.get_main_option("sqlalchemy.url")
+    context.configure(
+        url=url,
+        target_metadata=target_metadata,
+        literal_binds=True,
+        dialect_opts={"paramstyle": "named"},
+    )
+    with context.begin_transaction():
+        context.run_migrations()
 
 
-def run_migrations_online():
-    connectable = engine
+async def run_migrations_online():
+    connectable = create_async_engine(
+        context.config.get_main_option("sqlalchemy.url"),
+        poolclass=pool.NullPool,
+    )
+    async with connectable.connect() as connection:
+        await connection.run_sync(do_migrations)
 
-    with connectable.connect() as connection:
-        context.configure(
-            connection=connection,
-            target_metadata=target_metadata
-        )
 
-        with context.begin_transaction():
-            context.run_migrations()
+def do_migrations(connection):
+    context.configure(connection=connection, target_metadata=target_metadata)
+    with context.begin_transaction():
+        context.run_migrations()
 
 
 if context.is_offline_mode():
-    print("Offline mode not supported.")
+    run_migrations_offline()
 else:
-    run_migrations_online()
+    asyncio.run(run_migrations_online())

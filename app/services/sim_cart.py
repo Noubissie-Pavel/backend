@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from app.controller.sim_cart import create_sim_cart, get_sim_carts, get_sim_cart_by_id, update_sim_cart, delete_sim_cart
+from app.crud.sim_cart import create_sim_cart, get_sim_carts, get_sim_cart_by_id, update_sim_cart, delete_sim_cart
 from app.schemas.sim_cart import SimCartCreate, SimCartUpdate
 
 

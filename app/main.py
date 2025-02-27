@@ -23,18 +23,18 @@ app.add_middleware(ResponseFormattingMiddleware)
 app.include_router(router)
 
 
-def get_db():
+async def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
-        db.close()
+        await db.close()
 
 
 @app.on_event("startup")
 async def startup_event():
-    db = next(get_db())
-    create_default_admin(db)
+    async for db in get_db():
+        await create_default_admin(db)
 
 
 if __name__ == "__main__":

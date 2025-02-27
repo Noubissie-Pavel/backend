@@ -9,7 +9,12 @@ from app.models.ussd import Ussd
 from app.schemas.ussd import UssdCreate, UssdUpdate
 
 
-def create_ussd(db: Session, ussd_data: UssdCreate):
+async def get_ussd(db: AsyncSession, skip: int = 0, limit: int = 100):
+    result = await db.execute(select(Ussd).offset(skip).limit(limit))
+    return result.scalars().all()
+
+
+async def create_ussd(db: AsyncSession, ussd_data: UssdCreate):
     db_ussd = Ussd(
         code=ussd_data.code,
         description=ussd_data.description,
@@ -19,29 +24,22 @@ def create_ussd(db: Session, ussd_data: UssdCreate):
     )
     try:
         db.add(db_ussd)
-        db.commit()
-        db.refresh(db_ussd)
+        await db.commit()
+        await db.refresh(db_ussd)
         return db_ussd
     except IntegrityError:
-        db.rollback()
+        await db.rollback()
         raise ValueError(f"Operator with name {ussd_data.operator_name} already exists.")
 
 
-# def get_ussd(db: Session, skip: int = 0, limit: int = 100):
-#     return db.query(Ussd).offset(skip).limit(limit).all()
-#
-
-async def get_ussd(db: AsyncSession, skip: int = 0, limit: int = 100):
-    result = await db.execute(select(Ussd).offset(skip).limit(limit))
-    return await result.scalars().fetchall()
+async def get_ussd_by_id(db: AsyncSession, ussd_id: int):
+    result = await db.execute(select(Ussd).filter(Ussd.id == ussd_id))
+    return result.scalars().first()
 
 
-def get_ussd_by_id(db: Session, ussd_id: int):
-    return db.query(Ussd).filter(Ussd.id == ussd_id).first()
-
-
-def update_ussd(db: Session, ussd_id: int, ussd_data: UssdUpdate):
-    db_ussd = db.query(Ussd).filter(Ussd.id == ussd_id).first()
+async def update_ussd(db: AsyncSession, ussd_id: int, ussd_data: UssdUpdate):
+    result = await db.execute(select(Ussd).filter(Ussd.id == ussd_id))
+    db_ussd = result.scalars().first()
     if db_ussd:
         db_ussd.code = ussd_data.code or db_ussd.code
         db_ussd.description = ussd_data.description or db_ussd.description
@@ -49,20 +47,20 @@ def update_ussd(db: Session, ussd_id: int, ussd_data: UssdUpdate):
         db_ussd.updated_at = datetime.now()
 
         try:
-            db.commit()
-            db.refresh(db_ussd)
+            await db.commit()
+            await db.refresh(db_ussd)
             return db_ussd
         except IntegrityError:
-            db.rollback()
+            await db.rollback()
             raise ValueError(f"Operator with name {ussd_data.operator_name} already exists.")
     return None
 
 
-def delete_ussd(db: Session, ussd_id: int):
-    db_ussd = db.query(Ussd).filter(
-        Ussd.id == ussd_id).first()
+async def delete_ussd(db: AsyncSession, ussd_id: int):
+    result = await db.execute(select(Ussd).filter(Ussd.id == ussd_id))
+    db_ussd = result.scalars().first()
     if db_ussd:
-        db.delete(db_ussd)
-        db.commit()
+        await db.delete(db_ussd)
+        await db.commit()
         return db_ussd
     return None

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from app.controller.telecom_operator import create_telecom_operator, get_telecom_operators, get_telecom_operator_by_id
+from app.crud.telecom_operator import create_telecom_operator, get_telecom_operators, get_telecom_operator_by_id
 from app.schemas.telecom_operator import TelecomOperatorCreate
 
 

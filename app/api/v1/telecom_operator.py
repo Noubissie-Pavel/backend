@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Request, HTTPException
 from sqlalchemy.orm import Session
 
-from app.controller.telecom_operator import get_telecom_operator_by_id, update_telecom_operator, \
+from app.crud.telecom_operator import get_telecom_operator_by_id, update_telecom_operator, \
     get_telecom_operators, delete_telecom_operator
 from app.db.session import get_db
 from app.schemas.telecom_operator import TelecomOperator
