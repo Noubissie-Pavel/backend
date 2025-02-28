@@ -12,7 +12,7 @@ class TransactionBase(BaseModel):
     raison: str
     origin: str
     is_active: Optional[bool] = None
-
+    transaction_reference: Optional[str] = None
 
 
 class TransactionCreate(TransactionBase):
@@ -26,7 +26,6 @@ class TransactionUpdate(TransactionBase):
 
 class Transaction(TransactionBase):
     id: int
-    transaction_reference: str
     created_at: datetime
     updated_at: datetime
     is_active: Optional[bool] = None

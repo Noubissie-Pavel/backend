@@ -1,34 +1,42 @@
-from datetime import datetime
+import logging
+import traceback
 
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 
 from app.models.transaction import Transaction
 from app.schemas.transaction import TransactionCreate
 
-
-def create_transaction(db: Session, transaction_data: TransactionCreate):
-    db_transaction = Transaction(
-        receiver_phone_number=transaction_data.receiver_phone_number,
-        receiver_name=transaction_data.receiver_name,
-        amount=transaction_data.amount,
-        raison=transaction_data.raison,
-        origin=transaction_data.origin,
-        transaction_reference='PENDING',
-        is_active=transaction_data.is_active,
-        created_at=datetime.now(),
-        updated_at=datetime.now()
-    )
-
-    db.add(db_transaction)
-    db.commit()
-    db.refresh(db_transaction)
-    return db_transaction
+logger = logging.getLogger(__name__)
 
 
-def get_transactions(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(Transaction).offset(skip).limit(limit).all()
+async def create_transaction(db: AsyncSession, transaction_data: TransactionCreate):
+    transaction_data.transaction_reference = "TESTING"
+    db_transaction = Transaction(**transaction_data.dict())
+    try:
+        db.add(db_transaction)
+        await db.commit()
+        await db.refresh(db_transaction)
+        return db_transaction
+    except IntegrityError as e:
+        await db.rollback()
+        if "unique constraint" in str(e).lower():
+            logger.error(f"Transaction with reference {transaction_data.transaction_reference} already exists.")
+            return None
+        raise
+    except Exception as e:
+        await db.rollback()
+        logger.error(f"Unexpected error occurred: {str(e)}")
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        raise
 
 
-def get_transaction_by_id(db: Session, transaction_id: int):
-    return db.query(Transaction).filter(Transaction.id == transaction_id).first()
+async def get_transactions(db: AsyncSession, skip: int = 0, limit: int = 100):
+    result = await db.execute(select(Transaction).offset(skip).limit(limit))
+    return result.scalars().all()
+
+
+async def get_transaction_by_id(db: AsyncSession, transaction_id: int):
+    result = await db.execute(select(Transaction).filter(Transaction.id == transaction_id))
+    return result.scalars().first()
