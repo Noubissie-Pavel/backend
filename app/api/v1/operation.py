@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.schemas.operation import Operation, OperationCreate
+from app.schemas.operationschema import OperationSchema, OperationCreateSchema
 from app.services.operation import get_operations_service, create_operation_service, update_operation_service, \
     delete_operation_service, \
     get_operation_by_id_service
@@ -12,7 +12,7 @@ from app.utils.utils import PAGE_LIMIT
 operation_v1 = APIRouter()
 
 
-@operation_v1.get("/operations", response_model=list[Operation])
+@operation_v1.get("/operations", response_model=list[OperationSchema])
 async def get_operations_endpoint(
         skip: int = 0,
         limit: int = PAGE_LIMIT,
@@ -27,7 +27,7 @@ async def get_operations_endpoint(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@operation_v1.get("/operations/{operation_id}", response_model=Operation)
+@operation_v1.get("/operations/{operation_id}", response_model=OperationSchema)
 async def get_one_operation_endpoint(
         operation_id: int,
         db: AsyncSession = Depends(get_db),
@@ -44,9 +44,9 @@ async def get_one_operation_endpoint(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@operation_v1.post("/operations", response_model=Operation)
+@operation_v1.post("/operations", response_model=OperationSchema)
 async def create_operation_endpoint(
-        operation_data: OperationCreate,
+        operation_data: OperationCreateSchema,
         db: AsyncSession = Depends(get_db),
         request: Request = None):
     try:
@@ -58,10 +58,10 @@ async def create_operation_endpoint(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@operation_v1.put("/operations/{operation_id}", response_model=Operation)
+@operation_v1.put("/operations/{operation_id}", response_model=OperationSchema)
 async def update_operation_endpoint(
         operation_id: int,
-        operation_data: OperationCreate,
+        operation_data: OperationCreateSchema,
         db: AsyncSession = Depends(get_db),
         request: Request = None):
     try:
@@ -76,7 +76,7 @@ async def update_operation_endpoint(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@operation_v1.delete("/operations/{operation_id}", response_model=Operation)
+@operation_v1.delete("/operations/{operation_id}", response_model=OperationSchema)
 async def delete_operation_endpoint(
         operation_id: int,
         db: AsyncSession = Depends(get_db),

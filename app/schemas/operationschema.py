@@ -5,21 +5,22 @@ from pydantic import BaseModel
 from pydantic import BaseModel
 
 
-class OperationBase(BaseModel):
+class OperationBaseSchema(BaseModel):
     name: str
     description: Optional[str]
     is_active: Optional[bool] = None
 
 
-class OperationCreate(OperationBase):
-    pass
+class OperationCreateSchema(OperationBaseSchema):
+    telecom_operator_id: int
 
 
-class OperationUpdate(OperationBase):
+class OperationUpdateSchema(OperationBaseSchema):
     is_active: Optional[bool] = None
+    telecom_operator_id: Optional[int] = None
 
 
-class Operation(OperationBase):
+class OperationSchema(OperationBaseSchema):
     id: int
     created_at: datetime
     updated_at: datetime

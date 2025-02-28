@@ -14,6 +14,7 @@ class SimCart(Base):
     is_active = Column(Boolean, nullable=False, default=True)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+
     telecom_operator_id = Column(Integer, ForeignKey('telecom_operator.id'))
 
     telecom_operator = relationship("TelecomOperator", back_populates="sim_carts")
