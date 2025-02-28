@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
+from app.models.telecom_operator import TelecomOperator
 from app.models.transaction import Transaction
 from app.schemas.transaction import TransactionCreateSchema
 
@@ -44,10 +45,22 @@ async def create_transaction(db: AsyncSession, transaction_data: TransactionCrea
         raise
 
 
+# async def get_transactions(db: AsyncSession, skip: int = 0, limit: int = 100):
+#     result = await db.execute(
+#         select(Transaction)
+#         .options(selectinload(Transaction.telecom_operator))
+#         .offset(skip)
+#         .limit(limit)
+#     )
+#     return result.scalars().all()
+
 async def get_transactions(db: AsyncSession, skip: int = 0, limit: int = 100):
     result = await db.execute(
         select(Transaction)
-        .options(selectinload(Transaction.telecom_operator))
+        .options(
+            selectinload(Transaction.telecom_operator)
+            .selectinload(TelecomOperator.operations)
+        )
         .offset(skip)
         .limit(limit)
     )

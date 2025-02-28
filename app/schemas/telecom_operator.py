@@ -35,6 +35,8 @@ class TelecomOperatorOneToOne(TelecomOperatorBase):
     id: int
     created_at: datetime
     updated_at: datetime
+    operations: List[OperationSchema]
 
-    class Config:
-        orm_mode = True
+
+class Config:
+    orm_mode = True
