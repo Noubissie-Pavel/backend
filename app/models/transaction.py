@@ -12,6 +12,8 @@ class Transaction(Base):
     amount = Column(Integer, nullable=True)
     raison = Column(String, nullable=True)
     origin = Column(String, nullable=True)
+    telecom_operator_id = Column(Integer, nullable=False)
+    operation_id = Column(Integer, nullable=False)
     transaction_reference = Column(String, nullable=True)
     status = Column(String, nullable=True)
     is_active = Column(Boolean, nullable=True, default=True)

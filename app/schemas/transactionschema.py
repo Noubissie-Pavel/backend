@@ -12,22 +12,25 @@ class TransactionBase(BaseModel):
     raison: str
     origin: str
     is_active: Optional[bool] = None
-    transaction_reference: Optional[str] = None
 
 
-class TransactionCreate(TransactionBase):
-    pass
+class TransactionCreateSchema(TransactionBase):
+    telecom_operator_id: int
+    operation_id: int
 
 
-class TransactionUpdate(TransactionBase):
+class TransactionUpdateSchema(TransactionBase):
     is_active: Optional[bool] = None
     status: Optional[str] = None
 
 
-class Transaction(TransactionBase):
+class TransactionSchema(TransactionBase):
     id: int
     created_at: datetime
     updated_at: datetime
+    telecom_operator_id: int
+    operation_id: int
+    transaction_reference: str
     is_active: Optional[bool] = None
     status: Optional[str] = None
 

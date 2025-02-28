@@ -1,20 +1,20 @@
+from app.schemas.transactionschema import TransactionSchema, TransactionCreateSchema
 from fastapi import APIRouter, Depends, Request, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.schemas.transaction import Transaction, TransactionCreate
 from app.services.transaction import get_transactions_service, create_transaction_service, get_transaction_by_id_service
 
 transaction_v1 = APIRouter()
 
 
-@transaction_v1.post("/transaction", response_model=Transaction)
-async def create_transaction_endpoint(transaction_data: TransactionCreate, db: AsyncSession = Depends(get_db),
+@transaction_v1.post("/transaction", response_model=TransactionSchema)
+async def create_transaction_endpoint(transaction_data: TransactionCreateSchema, db: AsyncSession = Depends(get_db),
                                       request: Request = None):
     try:
         new_operator = await create_transaction_service(db, transaction_data=transaction_data)
-        # request.state.response_message = "Transaction created successfully"
+        request.state.response_message = "Transaction created successfully"
         return new_operator
     except HTTPException as e:
         raise e
@@ -22,7 +22,7 @@ async def create_transaction_endpoint(transaction_data: TransactionCreate, db: A
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@transaction_v1.get("/transaction", response_model=list[Transaction])
+@transaction_v1.get("/transaction", response_model=list[TransactionSchema])
 async def get_transactions_endpoint(skip: int = 0, limit: int = 100, db: AsyncSession = Depends(get_db),
                                     request: Request = None):
     try:

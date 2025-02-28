@@ -5,12 +5,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
 from app.crud.transaction import create_transaction, get_transactions, get_transaction_by_id
-from app.schemas.transaction import TransactionCreate
+from app.schemas.transactionschema import TransactionCreateSchema
 
 logger = logging.getLogger(__name__)
 
 
-async def create_transaction_service(db: AsyncSession, transaction_data: TransactionCreate):
+async def create_transaction_service(db: AsyncSession, transaction_data: TransactionCreateSchema):
     try:
         transaction_instance = await create_transaction(db, transaction_data)
         if transaction_instance is None:

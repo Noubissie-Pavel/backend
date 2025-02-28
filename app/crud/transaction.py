@@ -6,14 +6,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from app.models.transaction import Transaction
-from app.schemas.transaction import TransactionCreate
+from app.schemas.transactionschema import TransactionCreateSchema
 
 logger = logging.getLogger(__name__)
 
 
-async def create_transaction(db: AsyncSession, transaction_data: TransactionCreate):
-    transaction_data.transaction_reference = "TESTING"
+async def create_transaction(db: AsyncSession, transaction_data: TransactionCreateSchema):
     db_transaction = Transaction(**transaction_data.dict())
+    db_transaction.status = "PENDING"
+    db_transaction.transaction_reference = "TESTING"
+
     try:
         db.add(db_transaction)
         await db.commit()
