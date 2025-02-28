@@ -9,14 +9,16 @@ class SimCart(BaseModel):
     phone_number: str
     description: Optional[str] = None
     is_active: Optional[bool] = None
+    telecom_operator_id: int
 
 
 class SimCartCreate(SimCart):
-    pass
+    telecom_operator_id: int
 
 
 class SimCartUpdate(SimCart):
     is_active: Optional[bool] = None
+    telecom_operator_id: Optional[int] = None
 
 
 class SimCart(SimCart):

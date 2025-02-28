@@ -9,19 +9,20 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy import pool
-from app.models import user, company, telecom_operator, sim_cart, ussd, transaction,agency
+from app.models import user, company, telecom_operator, sim_cart, ussd, transaction, agency
+from app.models import Base
 
 if context.config.config_file_name is not None:
     fileConfig(context.config.config_file_name)
 
 target_metadata = [
     user.Base.metadata,
-    company.Base.metadata,
-    telecom_operator.Base.metadata,
-    sim_cart.Base.metadata,
-    ussd.Base.metadata,
-    transaction.Base.metadata,
-    agency.Base.metadata,
+    # transaction.Base.metadata,
+    # company.Base.metadata,
+    # telecom_operator.Base.metadata,
+    # sim_cart.Base.metadata,
+    # ussd.Base.metadata,
+    # agency.Base.metadata,
 ]
 
 

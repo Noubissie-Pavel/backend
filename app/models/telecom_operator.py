@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, func, Boolean
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import relationship
 
-Base = declarative_base()
+from app.models import Base
 
 
 class TelecomOperator(Base):
@@ -14,3 +14,5 @@ class TelecomOperator(Base):
     country = Column(String, nullable=False)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+
+    sim_carts = relationship("SimCart", back_populates="telecom_operator")

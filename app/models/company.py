@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, func, Boolean
-from sqlalchemy.orm import declarative_base
+from app.models import Base
 
-Base = declarative_base()
 
 
 class Company(Base):

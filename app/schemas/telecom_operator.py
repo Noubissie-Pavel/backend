@@ -13,7 +13,7 @@ class TelecomOperatorBase(BaseModel):
 
 
 class TelecomOperatorCreate(TelecomOperatorBase):
-   pass
+    pass
 
 
 class TelecomOperatorUpdate(TelecomOperatorBase):
