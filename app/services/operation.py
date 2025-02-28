@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
 from app.crud.operation import create_operation, get_operations, get_operation_by_id, update_operation, delete_operation
-from app.schemas.operationschema import OperationCreateSchema, OperationUpdateSchema, OperationSchema
+from app.schemas.operation import OperationCreateSchema, OperationUpdateSchema, OperationSchema
 
 
 async def create_operation_service(db: AsyncSession, operation_data: OperationCreateSchema):

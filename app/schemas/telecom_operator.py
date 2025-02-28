@@ -4,7 +4,7 @@ from typing import Optional, List
 from pydantic import BaseModel
 from pydantic import BaseModel
 
-from app.schemas.operationschema import OperationSchema
+from app.schemas.operation import OperationSchema
 from app.schemas.sim_cart import SimCartBase
 
 

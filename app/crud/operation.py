@@ -7,7 +7,7 @@ from sqlalchemy.orm import selectinload
 
 from app.models.operation import Operation
 from app.models.telecom_operator import TelecomOperator
-from app.schemas.operationschema import OperationCreateSchema, OperationUpdateSchema
+from app.schemas.operation import OperationCreateSchema, OperationUpdateSchema
 
 
 async def get_operations(db: AsyncSession, skip: int = 0, limit: int = 100):
