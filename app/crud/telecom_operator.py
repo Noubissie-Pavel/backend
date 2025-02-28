@@ -44,7 +44,7 @@ async def create_telecom_operator(db: AsyncSession, telecom_operator_data: Telec
 async def get_telecom_operators(db: AsyncSession, skip: int = 0, limit: int = 100):
     result = await db.execute(
         select(TelecomOperator)
-        .options(selectinload(TelecomOperator.sim_carts))  # Use sim_carts (plural)
+        .options(selectinload(TelecomOperator.sim_carts))
         .offset(skip)
         .limit(limit)
     )
@@ -55,7 +55,7 @@ async def get_telecom_operator_by_id(db: AsyncSession, telecom_operator_id: int)
     result = await db.execute(
         select(TelecomOperator)
         .filter(TelecomOperator.id == telecom_operator_id)
-        .options(selectinload(TelecomOperator.sim_carts))  # Use sim_carts (plural)
+        .options(selectinload(TelecomOperator.sim_carts))
     )
     return result.scalars().first()
 

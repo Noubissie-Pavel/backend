@@ -5,6 +5,7 @@ from datetime import datetime
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
 
 from app.models.sim_cart import SimCart
 from app.models.telecom_operator import TelecomOperator
@@ -14,7 +15,6 @@ logger = logging.getLogger(__name__)
 
 
 async def create_sim_cart(db: AsyncSession, sim_cart_data: SimCartCreate):
-    # Check if the TelecomOperator exists
     operator = await db.execute(
         select(TelecomOperator).filter(TelecomOperator.id == sim_cart_data.telecom_operator_id)
     )
@@ -23,13 +23,12 @@ async def create_sim_cart(db: AsyncSession, sim_cart_data: SimCartCreate):
     if not operator:
         raise ValueError(f"TelecomOperator with ID {sim_cart_data.telecom_operator_id} does not exist.")
 
-    # Create the SimCart object
     db_sim_cart = SimCart(
         phone_number=sim_cart_data.phone_number,
         description=sim_cart_data.description,
         is_active=sim_cart_data.is_active,
-        created_at=datetime.now(),  # Automatically set to current time
-        updated_at=datetime.now(),  # Automatically set to current time
+        created_at=datetime.now(),
+        updated_at=datetime.now(),
         telecom_operator_id=sim_cart_data.telecom_operator_id,
     )
 
@@ -37,7 +36,16 @@ async def create_sim_cart(db: AsyncSession, sim_cart_data: SimCartCreate):
         db.add(db_sim_cart)
         await db.commit()
         await db.refresh(db_sim_cart)
-        return db_sim_cart
+
+        result = await db.execute(
+            select(SimCart)
+            .filter(SimCart.id == db_sim_cart.id)
+            .options(selectinload(SimCart.telecom_operator))
+        )
+        print('result', result)
+        db_sim_cart_with_operator = result.scalars().first()
+
+        return db_sim_cart_with_operator
     except IntegrityError as e:
         await db.rollback()
         if "unique constraint" in str(e).lower():
@@ -52,7 +60,13 @@ async def create_sim_cart(db: AsyncSession, sim_cart_data: SimCartCreate):
 
 
 async def get_sim_carts(db: AsyncSession, skip: int = 0, limit: int = 100):
-    result = await db.execute(select(SimCart).offset(skip).limit(limit))
+    # result = await db.execute(select(SimCart).offset(skip).limit(limit))
+    result = await db.execute(
+        select(SimCart)
+        .options(selectinload(SimCart.telecom_operator_id))
+        .offset(skip)
+        .limit(limit)
+    )
     return result.scalars().all()
 
 

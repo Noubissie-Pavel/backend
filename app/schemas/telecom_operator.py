@@ -1,8 +1,10 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel
 from pydantic import BaseModel
+
+from app.schemas.sim_cart import SimCart
 
 
 class TelecomOperatorBase(BaseModel):
@@ -22,6 +24,7 @@ class TelecomOperatorUpdate(TelecomOperatorBase):
 
 class TelecomOperator(TelecomOperatorBase):
     id: int
+    sim_carts: List[SimCart]
     created_at: datetime
     updated_at: datetime
 
