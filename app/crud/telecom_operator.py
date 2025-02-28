@@ -27,7 +27,14 @@ async def create_telecom_operator(db: AsyncSession, telecom_operator_data: Telec
         db.add(db_telecom_operator)
         await db.commit()
         await db.refresh(db_telecom_operator)
-        return db_telecom_operator
+
+        result = await db.execute(
+            select(TelecomOperator)
+            .options(selectinload(TelecomOperator.sim_carts))
+            .options(selectinload(TelecomOperator.operations))
+            .filter(TelecomOperator.id == db_telecom_operator.id)
+        )
+        return result.scalars().first()
     except IntegrityError as e:
         await db.rollback()
         if "unique constraint" in str(e).lower():

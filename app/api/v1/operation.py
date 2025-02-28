@@ -27,7 +27,7 @@ async def get_operations_endpoint(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@operation_v1.get("/operations/{operation_id}", response_model=OperationSchema)
+@operation_v1.get("/operation/{operation_id}", response_model=OperationSchema)
 async def get_one_operation_endpoint(
         operation_id: int,
         db: AsyncSession = Depends(get_db),
@@ -44,7 +44,7 @@ async def get_one_operation_endpoint(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@operation_v1.post("/operations", response_model=OperationSchema)
+@operation_v1.post("/operation", response_model=OperationSchema)
 async def create_operation_endpoint(
         operation_data: OperationCreateSchema,
         db: AsyncSession = Depends(get_db),
@@ -58,7 +58,7 @@ async def create_operation_endpoint(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@operation_v1.put("/operations/{operation_id}", response_model=OperationSchema)
+@operation_v1.put("/operation/{operation_id}", response_model=OperationSchema)
 async def update_operation_endpoint(
         operation_id: int,
         operation_data: OperationCreateSchema,
@@ -76,7 +76,7 @@ async def update_operation_endpoint(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@operation_v1.delete("/operations/{operation_id}", response_model=OperationSchema)
+@operation_v1.delete("/operation/{operation_id}", response_model=OperationSchema)
 async def delete_operation_endpoint(
         operation_id: int,
         db: AsyncSession = Depends(get_db),

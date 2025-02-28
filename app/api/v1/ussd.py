@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.schemas.ussd import Ussd, UssdCreate
+from app.schemas.ussdschema import UssdSchema, UssdCreateSchema
 from app.services.ussd import get_ussd_service, create_ussd_service, update_ussd_service, delete_ussd_service, \
     get_ussd_by_id_service
 from app.utils.utils import PAGE_LIMIT
@@ -11,7 +11,7 @@ from app.utils.utils import PAGE_LIMIT
 ussd_v1 = APIRouter()
 
 
-@ussd_v1.get("/ussd", response_model=list[Ussd])
+@ussd_v1.get("/ussd", response_model=list[UssdSchema])
 async def get_ussd_endpoint(
         skip: int = 0,
         limit: int = PAGE_LIMIT,
@@ -26,7 +26,7 @@ async def get_ussd_endpoint(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@ussd_v1.get("/ussd/{ussd_id}", response_model=Ussd)
+@ussd_v1.get("/ussd/{ussd_id}", response_model=UssdSchema)
 async def get_one_ussd_endpoint(
         ussd_id: int,
         db: AsyncSession = Depends(get_db),
@@ -43,9 +43,9 @@ async def get_one_ussd_endpoint(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@ussd_v1.post("/ussd", response_model=Ussd)
+@ussd_v1.post("/ussd", response_model=UssdSchema)
 async def create_ussd_endpoint(
-        ussd_data: UssdCreate,
+        ussd_data: UssdCreateSchema,
         db: AsyncSession = Depends(get_db),
         request: Request = None):
     try:
@@ -57,10 +57,10 @@ async def create_ussd_endpoint(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@ussd_v1.put("/ussd/{ussd_id}", response_model=Ussd)
+@ussd_v1.put("/ussd/{ussd_id}", response_model=UssdSchema)
 async def update_ussd_endpoint(
         ussd_id: int,
-        ussd_data: UssdCreate,
+        ussd_data: UssdCreateSchema,
         db: AsyncSession = Depends(get_db),
         request: Request = None):
     try:
@@ -75,7 +75,7 @@ async def update_ussd_endpoint(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@ussd_v1.delete("/ussd/{ussd_id}", response_model=Ussd)
+@ussd_v1.delete("/ussd/{ussd_id}", response_model=UssdSchema)
 async def delete_ussd_endpoint(
         ussd_id: int,
         db: AsyncSession = Depends(get_db),

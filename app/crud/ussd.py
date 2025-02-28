@@ -6,7 +6,7 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
 from app.models.ussd import Ussd
-from app.schemas.ussd import UssdCreate, UssdUpdate
+from app.schemas.ussdschema import UssdCreateSchema, UssdUpdateSchema
 
 
 async def get_ussd(db: AsyncSession, skip: int = 0, limit: int = 100):
@@ -14,7 +14,7 @@ async def get_ussd(db: AsyncSession, skip: int = 0, limit: int = 100):
     return result.scalars().all()
 
 
-async def create_ussd(db: AsyncSession, ussd_data: UssdCreate):
+async def create_ussd(db: AsyncSession, ussd_data: UssdCreateSchema):
     db_ussd = Ussd(
         code=ussd_data.code,
         description=ussd_data.description,
@@ -37,7 +37,7 @@ async def get_ussd_by_id(db: AsyncSession, ussd_id: int):
     return result.scalars().first()
 
 
-async def update_ussd(db: AsyncSession, ussd_id: int, ussd_data: UssdUpdate):
+async def update_ussd(db: AsyncSession, ussd_id: int, ussd_data: UssdUpdateSchema):
     result = await db.execute(select(Ussd).filter(Ussd.id == ussd_id))
     db_ussd = result.scalars().first()
     if db_ussd:

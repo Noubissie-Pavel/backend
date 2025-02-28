@@ -10,15 +10,15 @@ class UssdBase(BaseModel):
     is_active: Optional[bool] = None
 
 
-class UssdCreate(UssdBase):
+class UssdCreateSchema(UssdBase):
     pass
 
 
-class UssdUpdate(UssdBase):
+class UssdUpdateSchema(UssdBase):
     pass
 
 
-class Ussd(UssdBase):
+class UssdSchema(UssdBase):
     id: int
     created_at: datetime
     updated_at: datetime
