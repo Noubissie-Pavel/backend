@@ -45,6 +45,7 @@ async def get_telecom_operators(db: AsyncSession, skip: int = 0, limit: int = 10
     result = await db.execute(
         select(TelecomOperator)
         .options(selectinload(TelecomOperator.sim_carts))
+        .options(selectinload(TelecomOperator.operations))
         .offset(skip)
         .limit(limit)
     )

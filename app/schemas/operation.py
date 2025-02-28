@@ -5,25 +5,25 @@ from pydantic import BaseModel
 from pydantic import BaseModel
 
 
-class SimCart(BaseModel):
-    phone_number: str
-    description: Optional[str] = None
+class OperationBase(BaseModel):
+    name: str
+    description: Optional[str]
     is_active: Optional[bool] = None
 
 
-class SimCartCreate(SimCart):
-    telecom_operator_id: int
+class OperationCreate(OperationBase):
+    pass
 
 
-class SimCartUpdate(SimCart):
+class OperationUpdate(OperationBase):
     is_active: Optional[bool] = None
-    telecom_operator_id: Optional[int] = None
 
 
-class SimCart(SimCart):
+class Operation(OperationBase):
     id: int
     created_at: datetime
     updated_at: datetime
+    is_active: bool
 
     class Config:
         orm_mode = True

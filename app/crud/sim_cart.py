@@ -60,13 +60,7 @@ async def create_sim_cart(db: AsyncSession, sim_cart_data: SimCartCreate):
 
 
 async def get_sim_carts(db: AsyncSession, skip: int = 0, limit: int = 100):
-    # result = await db.execute(select(SimCart).offset(skip).limit(limit))
-    result = await db.execute(
-        select(SimCart)
-        .options(selectinload(SimCart.telecom_operator_id))
-        .offset(skip)
-        .limit(limit)
-    )
+    result = await db.execute(select(SimCart).offset(skip).limit(limit))
     return result.scalars().all()
 
 

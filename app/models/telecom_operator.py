@@ -16,3 +16,5 @@ class TelecomOperator(Base):
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
     sim_carts = relationship("SimCart", back_populates="telecom_operator")
+
+    operations = relationship("Operation", back_populates="telecom_operator")

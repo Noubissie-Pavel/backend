@@ -1,11 +1,12 @@
 from sqlalchemy.orm import declarative_base
-# from .base import Base  # Shared Base object
-# from .user import User
-# from .company import Company
-# from telecom_operator import TelecomOperator
-# from .sim_cart import SimCart
-# from .ussd import Ussd
-# from .transaction import Transaction
-# from .agency import Agency
-# from sim_cart import SimCart
+
 Base = declarative_base()
+
+from app.models import agency
+from app.models import company
+from app.models import operation
+from app.models import sim_cart
+from app.models import telecom_operator
+from app.models import transaction
+from app.models import user
+from app.models import ussd

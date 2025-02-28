@@ -4,6 +4,7 @@ from typing import Optional, List
 from pydantic import BaseModel
 from pydantic import BaseModel
 
+from app.schemas.operation import Operation
 from app.schemas.sim_cart import SimCart
 
 
@@ -25,6 +26,7 @@ class TelecomOperatorUpdate(TelecomOperatorBase):
 class TelecomOperator(TelecomOperatorBase):
     id: int
     sim_carts: List[SimCart]
+    operations: List[Operation]
     created_at: datetime
     updated_at: datetime
 
