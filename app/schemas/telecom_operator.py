@@ -30,5 +30,11 @@ class TelecomOperator(TelecomOperatorBase):
     created_at: datetime
     updated_at: datetime
 
+
+class TelecomOperatorOneToOne(TelecomOperatorBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+
     class Config:
         orm_mode = True

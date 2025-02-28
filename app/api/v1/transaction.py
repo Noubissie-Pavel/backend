@@ -1,4 +1,4 @@
-from app.schemas.transactionschema import TransactionSchema, TransactionCreateSchema
+from app.schemas.transaction import TransactionSchema, TransactionCreateSchema
 from fastapi import APIRouter, Depends, Request, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session

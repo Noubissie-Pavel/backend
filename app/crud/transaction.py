@@ -4,9 +4,10 @@ import traceback
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
 
 from app.models.transaction import Transaction
-from app.schemas.transactionschema import TransactionCreateSchema
+from app.schemas.transaction import TransactionCreateSchema
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +21,15 @@ async def create_transaction(db: AsyncSession, transaction_data: TransactionCrea
         db.add(db_transaction)
         await db.commit()
         await db.refresh(db_transaction)
+
+        # Load related telecom_operator and operation data
+        await db.execute(
+            select(Transaction)
+            .options(selectinload(Transaction.telecom_operator))
+            .options(selectinload(Transaction.operation))
+            .filter(Transaction.id == db_transaction.id)
+        )
+
         return db_transaction
     except IntegrityError as e:
         await db.rollback()
@@ -35,7 +45,12 @@ async def create_transaction(db: AsyncSession, transaction_data: TransactionCrea
 
 
 async def get_transactions(db: AsyncSession, skip: int = 0, limit: int = 100):
-    result = await db.execute(select(Transaction).offset(skip).limit(limit))
+    result = await db.execute(
+        select(Transaction)
+        .options(selectinload(Transaction.telecom_operator))
+        .offset(skip)
+        .limit(limit)
+    )
     return result.scalars().all()
 
 

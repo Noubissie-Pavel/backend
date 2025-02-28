@@ -4,6 +4,8 @@ from typing import Optional
 from pydantic import BaseModel
 from pydantic import BaseModel
 
+from app.schemas.telecom_operator import TelecomOperator, TelecomOperatorOneToOne
+
 
 class TransactionBase(BaseModel):
     receiver_phone_number: str
@@ -28,11 +30,10 @@ class TransactionSchema(TransactionBase):
     id: int
     created_at: datetime
     updated_at: datetime
-    telecom_operator_id: int
-    operation_id: int
+    telecom_operator: TelecomOperatorOneToOne
     transaction_reference: str
-    is_active: Optional[bool] = None
-    status: Optional[str] = None
+    is_active: bool
+    status: str
 
     class Config:
         orm_mode = True

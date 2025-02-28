@@ -18,3 +18,5 @@ class TelecomOperator(Base):
     sim_carts = relationship("SimCart", back_populates="telecom_operator")
 
     operations = relationship("Operation", back_populates="telecom_operator")
+
+    transactions = relationship("Transaction", back_populates="telecom_operator")

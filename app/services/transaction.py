@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
 from app.crud.transaction import create_transaction, get_transactions, get_transaction_by_id
-from app.schemas.transactionschema import TransactionCreateSchema
+from app.schemas.transaction import TransactionCreateSchema
 
 logger = logging.getLogger(__name__)
 
