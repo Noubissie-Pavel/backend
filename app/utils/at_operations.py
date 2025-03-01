@@ -54,6 +54,8 @@ def get_ussd_operation_by_code(operation: Operation, transaction_data: Transacti
     # double_confirmation = send_at_command('AT+CUSD=1,"1",1').decode(errors='ignore')
     # print("-------------------------------------------------------------------------------", double_confirmation)
 
+    print("")
+
     return None
 
 
