@@ -15,6 +15,10 @@ class TransactionBase(BaseModel):
     origin: str
     is_active: Optional[bool] = None
 
+    class Config:
+        orm_mode = True
+        from_attributes = True
+
 
 class TransactionCreateSchema(TransactionBase):
     telecom_operator_id: int
@@ -34,6 +38,3 @@ class TransactionSchema(TransactionBase):
     transaction_reference: str
     is_active: bool
     status: str
-
-    class Config:
-        orm_mode = True

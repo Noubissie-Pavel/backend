@@ -10,6 +10,9 @@ class UserBase(BaseModel):
     first_name: str
     last_name: str
     is_active: bool
+    class Config:
+        orm_mode = True
+        from_attributes = True
 
 
 class UserCreate(UserBase):
@@ -29,5 +32,3 @@ class User(UserBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        orm_mode = True

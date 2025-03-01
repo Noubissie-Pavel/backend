@@ -33,6 +33,7 @@ async def get_telecom_operator_by_id_service(db: AsyncSession, telecom_operator_
     telecom_operator = await get_telecom_operator_by_id(db, telecom_operator_id)
     if telecom_operator is None:
         raise HTTPException(status_code=404, detail=f"Telecom operator with id {telecom_operator_id} not found.")
+
     return telecom_operator
 
 

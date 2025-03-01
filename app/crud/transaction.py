@@ -1,20 +1,46 @@
 import logging
 import traceback
 
+from fastapi import HTTPException
 from pygments.lexers import func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
+from app.models.operation import Operation
 from app.models.telecom_operator import TelecomOperator
 from app.models.transaction import Transaction
 from app.schemas.transaction import TransactionCreateSchema
+from app.utils.ussd_operations import get_ussd_operation_by_code
 
 logger = logging.getLogger(__name__)
 
 
 async def create_transaction(db: AsyncSession, transaction_data: TransactionCreateSchema):
+    telecom_operator = await db.execute(
+        select(TelecomOperator).filter(TelecomOperator.id == transaction_data.telecom_operator_id)
+    )
+    telecom_operator_result = telecom_operator.scalar_one_or_none()
+
+    if telecom_operator_result is None:
+        raise HTTPException(status_code=404,
+                            detail=f"TelecomOperator with ID {transaction_data.telecom_operator_id} does not exist.")
+
+    operation = await db.execute(
+        select(Operation).filter(Operation.id == transaction_data.operation_id)
+    )
+    operation_result = operation.scalar_one_or_none()
+
+    if operation_result is None:
+        raise HTTPException(status_code=404,
+                            detail=f"Operation with ID {transaction_data.operation_id} does not exist.")
+
+    operation_result = get_ussd_operation_by_code(operation_result)
+
+    if operation_result is None:
+        raise HTTPException(status_code=404,
+                            detail=f"Operation Failed with")
     db_transaction = Transaction(
         receiver_phone_number=transaction_data.receiver_phone_number,
         receiver_name=transaction_data.receiver_name,
@@ -28,19 +54,17 @@ async def create_transaction(db: AsyncSession, transaction_data: TransactionCrea
     )
 
     try:
-        # Add the transaction to the session and commit it asynchronously
         db.add(db_transaction)
         await db.commit()
-        await db.refresh(db_transaction)  # Ensure refreshing the db_transaction to get latest data
+        await db.refresh(db_transaction)
 
-        # Fetch the transaction with related telecom_operator and operations asynchronously
         result = await db.execute(
             select(Transaction)
             .options(selectinload(Transaction.telecom_operator).selectinload(TelecomOperator.operations))
             .filter(Transaction.id == db_transaction.id)
         )
+        return result.scalars().first()
 
-        return result.scalars().first()  # Return the created transaction with related data
     except IntegrityError as e:
         await db.rollback()
         if "unique constraint" in str(e).lower():
@@ -55,7 +79,14 @@ async def create_transaction(db: AsyncSession, transaction_data: TransactionCrea
 
 
 async def get_transaction_by_id(db: AsyncSession, transaction_id: int):
-    result = await db.execute(select(Transaction).filter(Transaction.id == transaction_id))
+    result = await db.execute(
+        select(Transaction)
+        .options(
+            selectinload(Transaction.telecom_operator)
+            .selectinload(TelecomOperator.operations)
+        )
+        .filter(Transaction.id == transaction_id)
+    )
     return result.scalars().first()
 
 

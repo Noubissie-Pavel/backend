@@ -31,6 +31,7 @@ async def create_operation(db: AsyncSession, operation_data: OperationCreateSche
         description=operation_data.description,
         is_active=operation_data.is_active,
         telecom_operator_id=operation_data.telecom_operator_id,
+        ussd_code=operation_data.ussd_code,
         created_at=datetime.now(),
         updated_at=datetime.now(),
     )
@@ -60,6 +61,7 @@ async def update_operation(db: AsyncSession, operation_id: int, operation_data: 
         db_operation.name = operation_data.name or db_operation.name
         db_operation.telecom_operator_id = operation_data.telecom_operator_id or db_operation.telecom_operator_id
         db_operation.description = operation_data.description or db_operation.description
+        db_operation.ussd_code = operation_data.ussd_code or db_operation.ussd_code
         db_operation.is_active = operation_data.is_active or db_operation.is_active
         db_operation.updated_at = datetime.now()
 

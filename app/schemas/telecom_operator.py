@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Optional, List
 
 from pydantic import BaseModel
-from pydantic import BaseModel
 
 from app.schemas.operation import OperationSchema
 from app.schemas.sim_cart import SimCartBase
@@ -13,6 +12,10 @@ class TelecomOperatorBase(BaseModel):
     description: Optional[str] = None
     is_active: Optional[bool] = None
     country: Optional[str] = None
+
+    class Config:
+        orm_mode = True
+        from_attributes = True
 
 
 class TelecomOperatorCreate(TelecomOperatorBase):
@@ -36,7 +39,3 @@ class TelecomOperatorOneToOne(TelecomOperatorBase):
     created_at: datetime
     updated_at: datetime
     operations: List[OperationSchema]
-
-
-class Config:
-    orm_mode = True

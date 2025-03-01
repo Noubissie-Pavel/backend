@@ -39,4 +39,4 @@ async def get_transaction_route(transaction_id: int, db: AsyncSession = Depends(
     transaction = await get_transaction_by_id_service(db=db, transaction_id=transaction_id)
     if transaction is None:
         raise HTTPException(status_code=404, detail="Transaction data not found")
-    return transaction
+    return ["ok"]

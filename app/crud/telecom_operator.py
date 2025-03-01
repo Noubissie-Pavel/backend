@@ -64,6 +64,7 @@ async def get_telecom_operator_by_id(db: AsyncSession, telecom_operator_id: int)
         select(TelecomOperator)
         .filter(TelecomOperator.id == telecom_operator_id)
         .options(selectinload(TelecomOperator.sim_carts))
+        .options(selectinload(TelecomOperator.operations))
     )
     return result.scalars().first()
 

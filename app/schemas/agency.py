@@ -11,6 +11,10 @@ class AgencyBase(BaseModel):
     address: str
     is_active: Optional[bool] = None
 
+    class Config:
+        orm_mode = True
+        from_attributes = True
+
 
 class AgencyCreate(AgencyBase):
     pass
@@ -24,6 +28,3 @@ class Agency(AgencyBase):
     id: int
     created_at: datetime
     updated_at: datetime
-
-    class Config:
-        orm_mode = True

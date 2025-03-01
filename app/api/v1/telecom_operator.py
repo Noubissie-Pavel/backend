@@ -38,8 +38,8 @@ async def get_telecom_operators_endpoint(skip: int = 0, limit: int = PAGE_LIMIT,
 
 
 @telecom_operator_v1.get("/telecom_operator/{telecom_operator_id}", response_model=TelecomOperator)
-async def get_one_telecom_operator_endpoint(telecom_operator_id: int, db: AsyncSession = Depends(get_db),
-                                            request: Request = None):
+async def get_telecom_operator_endpoint(telecom_operator_id: int, db: AsyncSession = Depends(get_db),
+                                        request: Request = None):
     try:
         response = await get_telecom_operator_by_id_service(db, telecom_operator_id)
         request.state.response_message = f'Telecom operator with id {telecom_operator_id} fetched successfully'

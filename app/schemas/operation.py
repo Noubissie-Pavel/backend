@@ -10,14 +10,20 @@ class OperationBaseSchema(BaseModel):
     description: Optional[str]
     is_active: Optional[bool] = None
 
+    class Config:
+        orm_mode = True
+        from_attributes = True
+
 
 class OperationCreateSchema(OperationBaseSchema):
     telecom_operator_id: int
+    ussd_code: str
 
 
 class OperationUpdateSchema(OperationBaseSchema):
     is_active: Optional[bool] = None
     telecom_operator_id: Optional[int] = None
+    ussd_code: Optional[str] = None
 
 
 class OperationSchema(OperationBaseSchema):
@@ -25,6 +31,3 @@ class OperationSchema(OperationBaseSchema):
     created_at: datetime
     updated_at: datetime
     is_active: bool
-
-    class Config:
-        orm_mode = True

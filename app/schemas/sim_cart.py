@@ -9,6 +9,9 @@ class SimCartBase(BaseModel):
     phone_number: str
     description: Optional[str] = None
     is_active: Optional[bool] = None
+    class Config:
+        orm_mode = True
+        from_attributes = True
 
 
 class SimCartCreate(SimCartBase):
@@ -24,6 +27,3 @@ class SimCart(SimCartBase):
     id: int
     created_at: datetime
     updated_at: datetime
-
-    class Config:
-        orm_mode = True

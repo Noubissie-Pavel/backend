@@ -13,6 +13,7 @@ class Operation(Base):
     is_active = Column(Boolean, nullable=True, default=True)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+    ussd_code = Column(String, nullable=True)
 
     telecom_operator_id = Column(Integer, ForeignKey('telecom_operator.id'))
 
