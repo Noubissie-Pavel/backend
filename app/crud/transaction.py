@@ -36,7 +36,7 @@ async def create_transaction(db: AsyncSession, transaction_data: TransactionCrea
         raise HTTPException(status_code=404,
                             detail=f"Operation with ID {transaction_data.operation_id} does not exist.")
 
-    operation_result = get_ussd_operation_by_code(operation_result)
+    operation_result = get_ussd_operation_by_code(operation_result, transaction_data)
 
     if operation_result is None:
         raise HTTPException(status_code=404,

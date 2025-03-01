@@ -31,3 +31,4 @@ class OperationSchema(OperationBaseSchema):
     created_at: datetime
     updated_at: datetime
     is_active: bool
+    ussd_code: Optional[str] = None
