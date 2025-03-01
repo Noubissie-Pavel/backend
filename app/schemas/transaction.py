@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import BaseModel
 from pydantic import BaseModel
 
-from app.schemas.telecom_operator import TelecomOperator, TelecomOperatorOneToOne
+from app.schemas.telecom_operator import TelecomOperatorSchema, TelecomOperatorOneToOne
 
 
 class TransactionBase(BaseModel):

@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.schemas.telecom_operator import TelecomOperatorCreate, TelecomOperator, TelecomOperatorUpdate
+from app.schemas.telecom_operator import TelecomOperatorCreate, TelecomOperatorSchema, TelecomOperatorUpdate
 from app.services.telocom_operator import create_telecom_operator_service, get_telecom_operators_service, \
     get_telecom_operator_by_id_service, update_telecom_operator_service, delete_telecom_operator_service
 from app.utils.utils import PAGE_LIMIT
@@ -11,7 +11,7 @@ from app.utils.utils import PAGE_LIMIT
 telecom_operator_v1 = APIRouter()
 
 
-@telecom_operator_v1.post("/telecom_operator", response_model=TelecomOperator)
+@telecom_operator_v1.post("/telecom_operator", response_model=TelecomOperatorSchema)
 async def create_telecom_operator_endpoint(telecom_operator: TelecomOperatorCreate,
                                            db: AsyncSession = Depends(get_db),
                                            request: Request = None):
@@ -24,7 +24,7 @@ async def create_telecom_operator_endpoint(telecom_operator: TelecomOperatorCrea
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@telecom_operator_v1.get("/telecom_operators", response_model=list[TelecomOperator])
+@telecom_operator_v1.get("/telecom_operators", response_model=list[TelecomOperatorSchema])
 async def get_telecom_operators_endpoint(skip: int = 0, limit: int = PAGE_LIMIT,
                                          db: AsyncSession = Depends(get_db),
                                          request: Request = None):
@@ -37,7 +37,7 @@ async def get_telecom_operators_endpoint(skip: int = 0, limit: int = PAGE_LIMIT,
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@telecom_operator_v1.get("/telecom_operator/{telecom_operator_id}", response_model=TelecomOperator)
+@telecom_operator_v1.get("/telecom_operator/{telecom_operator_id}", response_model=TelecomOperatorSchema)
 async def get_telecom_operator_endpoint(telecom_operator_id: int, db: AsyncSession = Depends(get_db),
                                         request: Request = None):
     try:
@@ -52,7 +52,7 @@ async def get_telecom_operator_endpoint(telecom_operator_id: int, db: AsyncSessi
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@telecom_operator_v1.put("/telecom_operator/{telecom_operator_id}", response_model=TelecomOperator)
+@telecom_operator_v1.put("/telecom_operator/{telecom_operator_id}", response_model=TelecomOperatorSchema)
 async def update_telecom_operator_endpoint(telecom_operator_id: int, telecom_operator: TelecomOperatorUpdate,
                                            db: AsyncSession = Depends(get_db),
                                            request: Request = None):
@@ -68,7 +68,7 @@ async def update_telecom_operator_endpoint(telecom_operator_id: int, telecom_ope
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@telecom_operator_v1.delete("/telecom_operator/{telecom_operator_id}", response_model=TelecomOperator)
+@telecom_operator_v1.delete("/telecom_operator/{telecom_operator_id}", response_model=TelecomOperatorSchema)
 async def delete_telecom_operator_endpoint(telecom_operator_id: int, db: AsyncSession = Depends(get_db),
                                            request: Request = None):
     try:

@@ -9,6 +9,7 @@ class SimCartBase(BaseModel):
     phone_number: str
     description: Optional[str] = None
     is_active: Optional[bool] = None
+
     class Config:
         orm_mode = True
         from_attributes = True
@@ -16,14 +17,17 @@ class SimCartBase(BaseModel):
 
 class SimCartCreate(SimCartBase):
     telecom_operator_id: int
+    secret_code: str
 
 
 class SimCartUpdate(SimCartBase):
     is_active: Optional[bool] = None
     telecom_operator_id: Optional[int] = None
+    secret_code: Optional[str] = None
 
 
-class SimCart(SimCartBase):
+class SimCartSchema(SimCartBase):
     id: int
     created_at: datetime
     updated_at: datetime
+    secret_code: str

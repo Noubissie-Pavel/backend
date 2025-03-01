@@ -12,15 +12,14 @@ from app.models.operation import Operation
 from app.models.telecom_operator import TelecomOperator
 from app.models.transaction import Transaction
 from app.schemas.transaction import TransactionCreateSchema
-from app.utils.ussd_operations import get_ussd_operation_by_code
+from app.utils.at_operations import get_ussd_operation_by_code
 
 logger = logging.getLogger(__name__)
 
 
 async def create_transaction(db: AsyncSession, transaction_data: TransactionCreateSchema):
     telecom_operator = await db.execute(
-        select(TelecomOperator).filter(TelecomOperator.id == transaction_data.telecom_operator_id)
-    )
+        select(TelecomOperator).filter(TelecomOperator.id == transaction_data.telecom_operator_id))
     telecom_operator_result = telecom_operator.scalar_one_or_none()
 
     if telecom_operator_result is None:
@@ -28,17 +27,16 @@ async def create_transaction(db: AsyncSession, transaction_data: TransactionCrea
                             detail=f"TelecomOperator with ID {transaction_data.telecom_operator_id} does not exist.")
 
     operation = await db.execute(
-        select(Operation).filter(Operation.id == transaction_data.operation_id)
-    )
+        select(Operation).filter(Operation.id == transaction_data.operation_id))
     operation_result = operation.scalar_one_or_none()
 
     if operation_result is None:
         raise HTTPException(status_code=404,
                             detail=f"Operation with ID {transaction_data.operation_id} does not exist.")
 
-    operation_result = get_ussd_operation_by_code(operation_result, transaction_data)
+    at_operation_result = get_ussd_operation_by_code(operation_result, transaction_data)
 
-    if operation_result is None:
+    if at_operation_result is None:
         raise HTTPException(status_code=404,
                             detail=f"Operation Failed with")
     db_transaction = Transaction(

@@ -27,6 +27,7 @@ async def create_sim_cart(db: AsyncSession, sim_cart_data: SimCartCreate):
         phone_number=sim_cart_data.phone_number,
         description=sim_cart_data.description,
         is_active=sim_cart_data.is_active,
+        secret_code=sim_cart_data.secret_code,
         created_at=datetime.now(),
         updated_at=datetime.now(),
         telecom_operator_id=sim_cart_data.telecom_operator_id,
@@ -78,6 +79,8 @@ async def update_sim_cart(db: AsyncSession, sim_cart_id: int, sim_cart_data: Sim
 
     if sim_cart_data.phone_number is not None:
         db_sim_cart.phone_number = sim_cart_data.phone_number
+    if sim_cart_data.secret_code is not None:
+        db_sim_cart.secret_code = sim_cart_data.secret_code
     if sim_cart_data.description is not None:
         db_sim_cart.description = sim_cart_data.description
     if sim_cart_data.is_active is not None:
